@@ -1,8 +1,10 @@
 from django.contrib.auth.models import User, Group
 from rest_framework import viewsets
+from rest_framework.permissions import IsAuthenticated
 
 from .serializers import UserSerializer, HistorySerializer
 from .models import History
+from .permissions import IsUser
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -12,6 +14,8 @@ class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all().order_by('-date_joined')
     serializer_class = UserSerializer
 
+    permission_classes = [IsAuthenticated, IsUser]
+
 
 # Create your views here.
 class HistoryViewSet(viewsets.ModelViewSet):
@@ -20,6 +24,8 @@ class HistoryViewSet(viewsets.ModelViewSet):
     """
     queryset = History.objects.all()
     serializer_class = HistorySerializer
+
+    permission_classes = [IsAuthenticated]
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
