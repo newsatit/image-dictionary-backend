@@ -1,18 +1,26 @@
 from django.contrib.auth.models import User, Group
-from rest_framework import viewsets
+from rest_framework import viewsets, generics
 from rest_framework.permissions import IsAuthenticated
 
-from .serializers import UserSerializer, HistorySerializer
+from .serializers import UserRegisterSerializer, UserDetailSerializer, HistorySerializer
 from .models import History
 from .permissions import IsUser
 
 
-class UserViewSet(viewsets.ModelViewSet):
+class UserCreateView(generics.CreateAPIView):
     """
-    API endpoint that allows users to be viewed or edited.
+    API endpoint for creating new users
     """
-    queryset = User.objects.all().order_by('-date_joined')
-    serializer_class = UserSerializer
+    queryset = User.objects.all()
+    serializer_class = UserRegisterSerializer
+
+
+class UserDetailView(generics.RetrieveAPIView):
+    """
+    API endpoint that allows users to view their profile.
+    """
+    queryset = User.objects.all()
+    serializer_class = UserDetailSerializer
 
     permission_classes = [IsAuthenticated, IsUser]
 

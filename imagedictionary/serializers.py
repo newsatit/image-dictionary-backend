@@ -1,10 +1,16 @@
-from django.contrib.auth.models import User, Group
+from django.contrib.auth.models import User
 from rest_framework import serializers
 
 from .models import History
 
 
-class UserSerializer(serializers.ModelSerializer):
+class UserRegisterSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['username', 'email', 'password']
+        
+
+class UserDetailSerializer(serializers.ModelSerializer):
     histories = serializers.StringRelatedField(many=True)
 
     class Meta:
