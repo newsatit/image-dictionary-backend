@@ -12,7 +12,7 @@ history_list = views.HistoryViewSet.as_view({
 })
 
 urlpatterns = [
-    path('api-token-auth/', obtain_auth_token),
+    path('api-token-auth/', views.CustomAuthToken.as_view()),
     path('users/', user_create),
     path('users/<int:pk>/', user_detail),
     path('histories/', history_list)
