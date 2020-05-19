@@ -6,11 +6,15 @@ from .models import History
 
 
 class APITest(APITestCase):
-  def set_credentials(self):
+  def set_credentials(self, username=None, password=None):
+    if username is None:
+      username = self.username
+    if password is None:
+      password = self.password
     url = '/api/api-token-auth/'
     data = {
-      'username': self.username,
-      'password': self.password
+      'username': username,
+      'password': password
     }
     response = self.client.post(url, data)
     self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -37,8 +41,13 @@ class APITest(APITestCase):
     self.assertEqual(response.status_code, status.HTTP_201_CREATED)
     self.assertEqual(User.objects.count(), 2)
     self.assertEqual(User.objects.get(username='newusername').email, 'new@gmail.com')
+    # get user after sign up
+    user_id = self.set_credentials(username='newusername', password='newpassword')
+    url = '/api/users/{user_id}/'.format(user_id=user_id)
+    response = self.client.get(url)
+    self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-  def test_get_user_by_token(self):
+  def test_get_user(self):
     """
     Ensure we can get the user detail.
     """
@@ -46,6 +55,18 @@ class APITest(APITestCase):
     url = '/api/users/{user_id}/'.format(user_id=user_id)
     response = self.client.get(url)
     self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+  def test_auth_token_error(self):
+    """
+    Ensure that incorrect login credentials return the right message. 
+    """
+    url = '/api/api-token-auth/'
+    data = {
+      'username': self.username + 'a',
+      'password': self.password
+    }
+    response = self.client.post(url, data)
+    self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
   def test_history(self):
     """
