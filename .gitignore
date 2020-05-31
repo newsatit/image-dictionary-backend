@@ -1,3 +1,10 @@
 */__pycache__/
 .vscode/
 db.sqlite3
+
+imagedictionary/migrations/
+
+.env
+
+ssh-key
+ssh-key.pub
