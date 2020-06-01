@@ -5,6 +5,7 @@ db.sqlite3
 imagedictionary/migrations/
 
 .env
+.env.prod
 
 ssh-key
 ssh-key.pub
