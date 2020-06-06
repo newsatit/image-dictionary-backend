@@ -9,9 +9,22 @@ services:
       - POSTGRES_PASSWORD=postgres
   web:
     build: .
-    command: gunicorn backend.wsgi:application --bind 0.0.0.0:8000
-    ports:
-      - "8000:8000"
+    command: bash -c "python manage.py makemigrations && python manage.py migrate && gunicorn --certfile=/etc/certs/localhost.crt --keyfile=/etc/certs/localhost.key backend.wsgi:application --bind 0.0.0.0:443"
     depends_on:
       - db
     env_file: .env.prod
+    volumes:
+      - .:/usr/src/app
+      - ./nginx/certs/:/etc/certs
+    expose:
+      - "443"
+  nginx:
+    image: nginx:1.17.4
+    container_name: ng
+    ports:
+      - "443:443"
+      - "80:80"
+    volumes:
+      - ./nginx/:/etc/nginx/conf.d
+    depends_on:
+      - web

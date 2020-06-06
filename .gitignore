@@ -9,3 +9,6 @@ imagedictionary/migrations/
 
 ssh-key
 ssh-key.pub
+image-dictionary-backend.code-workspace
+
+nginx/certs/
